@@ -1,4 +1,4 @@
-import { Controller, Post, Body , HttpStatus, HttpCode, Get, UsePipes, ValidationPipe} from '@nestjs/common';
+import { Controller, Post, Body , HttpStatus, HttpCode, Get, UsePipes, ValidationPipe, Res} from '@nestjs/common';
 import {CreateUserDTO} from './dto/create-user.dto'
 import {UserService} from './user.service'
 import { User } from './user.entity';
@@ -10,17 +10,29 @@ export class UserController {
     @HttpCode(HttpStatus.CREATED) // 201 Created
     @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     async create(@Body() user: CreateUserDTO) {
-        const newUser = await this.userService.create(user);
-        return {
-        status: 'success',
-        data: newUser,
-        };
+        try{
+            const newUser = await this.userService.create(user);
+            return {
+                success: true,
+                user: user
+            }
+        }catch(error){
+            return {
+                success: false,
+                error: error.message
+            }
+        }
    }
+
 
     @Get('getAllUser')
     @HttpCode(HttpStatus.OK)
-    async getAllUser() {
-        return await this.userService.findAll()
+    async getAllUser(@Res() response) {
+        let allUser =  await this.userService.findAll()
+        return response.status(HttpStatus.OK).json({
+            message: 'Get All user successfully',
+            user: allUser
+        })
     }
 
 }
