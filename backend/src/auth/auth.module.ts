@@ -13,8 +13,8 @@ import { JwtStrategy } from 'src/passport/jwt.strategy';
     TypeOrmModule.forFeature([User]),
     UserModule,
     JwtModule.register({
-      global: true, // để toàn app dùng được
-      secret: 'supersecretkey', // để .env thì chuẩn hơn
+      global: true,
+      secret: 'supersecretkey',
       signOptions: { expiresIn: '1h' },
     }),
   ],
